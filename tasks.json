@@ -1,0 +1,43 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile Java",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy", "ByPass",
+                "-Command",
+                "Clear-Host; cd M:\\Code\\Java\\src; if (-not (Test-Path '..\\bin')) { New-Item -ItemType Directory -Path '..\\bin' }; $javaFiles = Get-ChildItem -Path . -Filter *.java; if ($javaFiles.Count -eq 0) { Write-Output 'No Java files found in ' + (Get-Location).Path; exit 1 }; $javaFiles | ForEach-Object { Write-Output 'Compiling ' + $_.FullName; & 'C:\\Program Files\\Java\\jdk-22\\bin\\javac' -d '..\\bin' $_.FullName }"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Java",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy", "ByPass",
+                "-Command",
+                "Clear-Host; cd M:\\Code\\Java\\src; $javaFiles = Get-ChildItem -Path . -Filter *.java; if ($javaFiles.Count -eq 0) { Write-Output 'No Java files found.'; exit 1 }; $mainClass = [System.IO.Path]::GetFileNameWithoutExtension($javaFiles[0].Name); if (-not (Test-Path '..\\bin')) { Write-Output 'bin directory does not exist.'; exit 1 }; & 'C:\\Program Files\\Java\\jdk-22\\bin\\java' -cp '..\\bin' $mainClass"
+            ],
+            "dependsOn": "Compile Java",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "focus": true
+            }
+        }
+    ]
+}
